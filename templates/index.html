@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Oracle to PostgreSQL Migrator</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; }
+        textarea { width: 100%; height: 100px; }
+        input[type=text], select { width: 100%; padding: 8px; margin: 8px 0; }
+        button { padding: 10px 15px; background: green; color: white; border: none; }
+        .flash { margin-top: 20px; padding: 10px; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; }
+        .danger { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h2>Oracle → PostgreSQL Table Migrator</h2>
+    <form method="post">
+        <label>Select Oracle DB:</label>
+        <select name="oracle_db">
+            {% for db_key in oracle_dbs %}
+                <option value="{{ db_key }}">{{ db_key }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Oracle SQL Query:</label>
+        <textarea name="query" placeholder="e.g., SELECT * FROM multilingual_table"></textarea>
+
+        <label>PostgreSQL Table Name:</label>
+        <input type="text" name="pg_table" placeholder="e.g., target_table_name" required>
+
+        <button type="submit">Migrate</button>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</body>
+</html>
