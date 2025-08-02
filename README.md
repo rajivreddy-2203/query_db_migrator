@@ -1,6 +1,6 @@
-# Oracle_PG_Migrator
+# Data migrator
 
-Oracle_PG_Migrator is a Python-based utility that helps you **migrate data between Oracle, PostgreSQL, MySQL, and MSSQL databases** with minimal setup. Designed for flexibility, the tool allows you to trigger only the necessary migration scripts, letting you install just the Python packages you need for your specific migration scenario.
+Data migrator is a Python-based utility that helps you **migrate data between Oracle, PostgreSQL, MySQL, and MSSQL databases** with minimal setup. Designed for flexibility, the tool allows you to trigger only the necessary migration scripts, letting you install just the Python packages you need for your specific migration scenario.
 
 ---
 
