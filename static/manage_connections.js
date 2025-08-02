@@ -1,19 +1,23 @@
 function fetchConnections() {
   fetch('/api/connections')
-  .then(resp => resp.json())
-  .then(cons => {
-    let tbody = document.querySelector('#connections tbody');
-    tbody.innerHTML = '';
-    Object.entries(cons).forEach(([type, dbs]) => {
-      Object.entries(dbs).forEach(([name, details]) => {
-        let tr = document.createElement('tr');
-        tr.innerHTML = `<td>${name}</td><td>${type}</td>
-          <td><button onclick="delConn('${name}')">Delete</button></td>`;
-        tbody.appendChild(tr);
+    .then(resp => resp.json())
+    .then(cons => {
+      let tbody = document.querySelector('#connections tbody');
+      tbody.innerHTML = '';
+      Object.entries(cons).forEach(([type, dbs]) => {
+        Object.entries(dbs).forEach(([name, details]) => {
+          let tr = document.createElement('tr');
+          tr.innerHTML = `<td>${name}</td><td>${type}</td>
+            <td>
+              <button onclick="editConn('${type}', '${name}')">Edit</button>
+              <button onclick="delConn('${name}')">Delete</button>
+            </td>`;
+          tbody.appendChild(tr);
+        });
       });
     });
-  });
 }
+
 
 function showFields() {
   let db_type = document.getElementById('db_type').value;
@@ -44,6 +48,27 @@ function delConn(name) {
     .then(() => fetchConnections());
   }
 }
+
+function editConn(db_type, name) {
+  fetch('/api/connections')
+    .then(resp => resp.json())
+    .then(cons => {
+      const details = cons[db_type][name];
+      document.getElementById('name').value = name;
+      document.getElementById('db_type').value = db_type;
+      showFields();
+      setTimeout(() => {
+        for (const key in details) {
+          if (document.getElementById(key)) {
+            document.getElementById(key).value = details[key];
+          }
+        }
+        document.getElementById('name').readOnly = true;
+        document.getElementById('db_type').disabled = true;
+      }, 50);
+    });
+}
+
 
 function resetForm() {
   document.getElementById('connForm').reset();
