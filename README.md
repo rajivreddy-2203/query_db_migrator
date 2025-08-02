@@ -16,14 +16,14 @@
 
 1. **Manage Connections:**
    - Navigate to the **Manage Connections** page.
-   - You can **add** or **remove** database connections from the UI.
+   - You can **add** , **edit** or **remove** database connections from the UI.
    - These changes will be reflected and saved in `config/db_connections.json`.
 
 2. **Run a Migration:**
    - From the main page, **select the source connection** (the database to read from).
    - Select the **destination connection** (the database to write to).
-   - Provide a valid SQL **query** to extract data from the source.
-   - Enter the **target table name** in the destination database.
+   - Provide a valid SQL **query** to extract data from the source, note: multi-table queries are also supported.
+   - Enter the **target table name** in the destination table name.
    - Click the **Migrate** button to start the process.
 
 > The system will read the data from the source using your query and insert it into the destination table.
@@ -62,7 +62,7 @@ Edit `config/db_connections.json` to specify your source and target database cre
 }
 ```
 
-> The app and UI update this file automatically when you add, edit, or remove connections.
+> No need to edit this file as the app and UI updates this file automatically when you add, edit, or remove connections.
 
 ### 3. Install Required Packages
 
