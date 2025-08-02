@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>DB Migrator</title>
-  <style>
-    body { font-family: Arial; }
-    .container { width:600px; margin:auto; }
-    .btn { padding:6px 12px; }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body>
   <div class="container">
     <h2>Data Migration Tool</h2>
@@ -20,52 +18,12 @@
       <textarea id="query" rows="3" cols="60" required></textarea><br><br>
       <label>Destination Table Name:</label><br>
       <input id="target_table" type="text" required><br><br>
-      <button type="submit" class="btn">Migrate</button>
-      <button type="button" class="btn" onclick="window.location='/manage-connections'">Manage Connections</button>
+      <button id="migrateBtn" type="submit" class="btn">Migrate</button>
+      <button id="manageConnectionsBtn" type="button" class="btn" onclick="window.location='/manage-connections'">Manage Connections</button>
     </form>
-    <div id="result" style="margin-top:16px;"></div>
+    <div id="result" style="display:none;"></div>
   </div>
-  <script>
-    function fetchConnections() {
-      fetch('/api/connections')
-      .then(resp => resp.json())
-      .then(cons => {
-        let srcSel = document.getElementById('source');
-        let dstSel = document.getElementById('destination');
-        srcSel.innerHTML = '';
-        dstSel.innerHTML = '';
-        Object.entries(cons).forEach(([type, dbs]) => {
-          Object.keys(dbs).forEach(name => {
-            let opt1 = document.createElement('option');
-            opt1.value = name; opt1.textContent = `${name} [${type}]`;
-            let opt2 = opt1.cloneNode(true);
-            srcSel.appendChild(opt1);
-            dstSel.appendChild(opt2);
-          });
-        });
-      });
-    }
-    fetchConnections();
-
-    document.getElementById('migrateForm').onsubmit = function(e){
-      e.preventDefault();
-      let data = {
-        source: document.getElementById('source').value,
-        destination: document.getElementById('destination').value,
-        query: document.getElementById('query').value,
-        target_table: document.getElementById('target_table').value
-      };
-      document.getElementById('result').textContent = "Migrating...";
-      fetch('/api/migrate', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)})
-      .then(r => r.json())
-      .then(res => {
-        if(res.success) {
-          document.getElementById('result').textContent = `Success! ${res.rows} rows migrated.`;
-        } else {
-          document.getElementById('result').textContent = "Error: " + res.error;
-        }
-      });
-    };
-  </script>
+  <script src="/static/index.js"></script>
 </body>
+
 </html>

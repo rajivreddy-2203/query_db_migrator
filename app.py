@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from db_router import get_all_connections, save_connection, delete_connection
 from migrator import migrate_data
+import time
 
 app = Flask(__name__)
 
@@ -33,8 +34,11 @@ def api_migrate():
     query = data['query']
     target_table = data['target_table']
     try:
+        start_time=time.time()
         count = migrate_data(src_name, dst_name, query, target_table)
-        return jsonify({"success": True, "rows": count})
+        end_time=time.time()
+        elapsed=end_time-start_time
+        return jsonify({"success": True, "rows": count, "elapsed":elapsed})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
 

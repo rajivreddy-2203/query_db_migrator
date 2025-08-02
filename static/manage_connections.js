@@ -21,13 +21,14 @@ function showFields() {
   let html = '';
   if (db_type === "oracle") {
     html = `
-      <label>User:</label><input id="user" required><br>
+      <label>User id:</label><input id="user" required><br>
       <label>Password:</label><input id="password" type="password" required><br>
-      <label>DSN:</label><input id="dsn" required><br>
+      <label>DSN: </label><input id="dsn" required><br>
+      <small>(sample dsn: "localhost:port/sid" you can use service name instead of sid)</small>
     `;
   } else if (db_type === "postgresql" || db_type === "mysql" || db_type === "sqlserver") {
     html = `
-      <label>User:</label><input id="user" required><br>
+      <label>User id:</label><input id="user" required><br>
       <label>Password:</label><input id="password" type="password" required><br>
       <label>Host:</label><input id="host" required><br>
       <label>Port:</label><input id="port" required><br>

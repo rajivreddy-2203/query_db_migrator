@@ -2,12 +2,7 @@
 <html>
 <head>
   <title>Manage Connections</title>
-  <style>
-  body { font-family: Arial; }
-  .container { width:600px; margin:auto; }
-  .btn { padding:6px 12px; }
-  label { display:inline-block; width:140px; }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
   <div class="container">
@@ -19,7 +14,6 @@
     <hr>
     <h4>Add/Edit Connection</h4>
     <form id="connForm">
-      <label>Name:</label> <input id="name" required> <br>
       <label>Type:</label>
         <select id="db_type" required onchange="showFields()">
           <option value="">--Select--</option>
@@ -28,6 +22,7 @@
           <option value="mysql">MySQL</option>
           <option value="sqlserver">SQL Server</option>
         </select><br>
+      <label>Connection Name:</label> <input id="name" required> <br>
       <div id="fields"></div>
       <button type="submit" class="btn">Save</button>
       <button type="button" class="btn" onclick="resetForm()">Reset</button>
