@@ -1,35 +1,23 @@
-from db_config import get_oracle_connection
-from psycopg2 import sql
-from psycopg2.extras import execute_batch
+from db_router import get_connection_by_name
+import importlib
+import pandas as pd
 
-def migrate_query_result(oracle_db_key, query, pg_table, pg_conn):
-    # Fetch data from Oracle
-    with get_oracle_connection(oracle_db_key) as ora_conn:
-        cursor = ora_conn.cursor()
-        cursor.execute(query)
-        columns = [desc[0].lower() for desc in cursor.description]
-        rows = cursor.fetchall()
+def migrate_data(source_conn_name, dest_conn_name, query, target_table):
+    src = get_connection_by_name(source_conn_name)
+    dst = get_connection_by_name(dest_conn_name)
 
-    if not rows:
-        raise Exception("No rows returned from Oracle query.")
+    reader_mod = importlib.import_module(f"{src['type']}_reader")
+    writer_mod = importlib.import_module(f"{dst['type']}_writer")
 
-    # Create table in PostgreSQL
-    with pg_conn.cursor() as cur:
-        col_defs = [f"{col} TEXT" for col in columns]  # Use TEXT to support multilingual
-        cur.execute(
-            sql.SQL("CREATE TABLE IF NOT EXISTS {} ({})").format(
-                sql.Identifier(pg_table),
-                sql.SQL(', ').join(sql.SQL(col_def) for col_def in col_defs)
-            )
-        )
+    all_rows = []
+    columns = None
+    # Fetch data from source, yielding (columns, rows)
+    for cols, rows in reader_mod.fetch_data(query, src):
+        if columns is None:
+            columns = cols
+        all_rows.extend(rows)
 
-        # Insert rows
-        insert_query = sql.SQL("INSERT INTO {} ({}) VALUES ({})").format(
-            sql.Identifier(pg_table),
-            sql.SQL(', ').join(map(sql.Identifier, columns)),
-            sql.SQL(', ').join(sql.Placeholder() * len(columns))
-        )
-        execute_batch(cur, insert_query.as_string(pg_conn), rows)
-
-    pg_conn.commit()
-    return {"rows_migrated": len(rows)}
+    # Data type transformation can be done here if you wish (optionally)
+    df = pd.DataFrame(all_rows, columns=columns)
+    writer_mod.insert_data(dst, df, target_table)
+    return len(df)

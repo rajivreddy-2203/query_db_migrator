@@ -1,22 +1,42 @@
-from flask import Flask, render_template, request, flash
-from migrator import migrate_query_result
-from db_config import ORACLE_DBS, get_pg_connection
+from flask import Flask, render_template, request, jsonify
+from db_router import get_all_connections, save_connection, delete_connection
+from migrator import migrate_data
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key_here"  # Change this in production
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        oracle_db_key = request.form.get("oracle_db")
-        query = request.form.get("query")
-        pg_table = request.form.get("pg_table")
+@app.route('/')
+def home():
+    return render_template('index.html')
 
-        try:
-            pg_conn = get_pg_connection()
-            result = migrate_query_result(oracle_db_key, query, pg_table, pg_conn)
-            flash(f"✅ Migration complete: {result['rows_migrated']} rows inserted into '{pg_table}'", "success")
-        except Exception as e:
-            flash(f"❌ Error: {str(e)}", "danger")
+@app.route('/manage-connections')
+def manage_connections():
+    return render_template('manage_connections.html')
 
-    return render_template("index.html", oracle_dbs=ORACLE_DBS.keys())
+@app.route('/api/connections', methods=['GET', 'POST', 'DELETE'])
+def api_connections():
+    if request.method == 'GET':
+        return jsonify(get_all_connections())
+    elif request.method == 'POST':
+        data = request.json
+        save_connection(data['name'], data['db_type'], data['details'])
+        return jsonify({"success": True})
+    elif request.method == 'DELETE':
+        name = request.args.get('name')
+        delete_connection(name)
+        return jsonify({"success": True})
+
+@app.route('/api/migrate', methods=['POST'])
+def api_migrate():
+    data = request.json
+    src_name = data['source']
+    dst_name = data['destination']
+    query = data['query']
+    target_table = data['target_table']
+    try:
+        count = migrate_data(src_name, dst_name, query, target_table)
+        return jsonify({"success": True, "rows": count})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+if __name__ == '__main__':
+    app.run(debug=True)

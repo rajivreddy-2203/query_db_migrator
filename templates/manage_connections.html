@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manage Connections</title>
+  <style>
+  body { font-family: Arial; }
+  .container { width:600px; margin:auto; }
+  .btn { padding:6px 12px; }
+  label { display:inline-block; width:140px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h3>Connections</h3>
+    <table id="connections" border="1" cellpadding="5">
+      <thead><tr><th>Name</th><th>Type</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <hr>
+    <h4>Add/Edit Connection</h4>
+    <form id="connForm">
+      <label>Name:</label> <input id="name" required> <br>
+      <label>Type:</label>
+        <select id="db_type" required onchange="showFields()">
+          <option value="">--Select--</option>
+          <option value="oracle">Oracle</option>
+          <option value="postgresql">Postgres</option>
+          <option value="mysql">MySQL</option>
+          <option value="sqlserver">SQL Server</option>
+        </select><br>
+      <div id="fields"></div>
+      <button type="submit" class="btn">Save</button>
+      <button type="button" class="btn" onclick="resetForm()">Reset</button>
+      <button type="button" class="btn" onclick="window.location='/'">Back</button>
+    </form>
+  </div>
+  <script src="/static/manage_connections.js"></script>
+</body>
+</html>

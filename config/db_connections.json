@@ -1,0 +1,20 @@
+{
+    "oracle": {
+        "oracle": {
+            "user": "yrr2203",
+            "password": "yrr2203",
+            "dsn": "localhost:1522/orclpdb"
+        }
+    },
+    "postgresql": {
+        "postgres": {
+            "user": "postgres",
+            "password": "admin",
+            "host": "localhost",
+            "port": "5432",
+            "database": "postgres"
+        }
+    },
+    "mysql": {},
+    "sqlserver": {}
+}
