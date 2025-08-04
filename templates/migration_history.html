@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Migration History</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    .container { max-width: 1100px; margin: 2em auto; font-family: Arial, sans-serif; }
+    h2 { text-align: center; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+    th, td { border: 1px solid #ddd; padding: 7px; text-align: left; }
+    th { background: #f4f4f4; }
+    tr:nth-child(even) { background: #fafafa; }
+    tr:hover { background: #f1f1f1; }
+    .btn { padding: 6px 18px; margin: 0 5px; background: #357cf9; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    input[type="search"] { padding: 6px; width: 240px; margin: 12px 0 18px 0; border: 1px solid #ccc; border-radius: 4px; display: block; }
+    @media (max-width: 600px) {
+      .container { padding: 5px; font-size: 13px;}
+      table th, table td { font-size: 12px; padding: 4px; }
+      input[type="search"] { width: 100%; }
+    }
+    .nowrap { white-space: nowrap; }
+    .wrap { word-break: break-all; max-width:180px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Migration History</h2>
+  <input type="search" id="historySearch" placeholder="Search by Job ID, Table, Source, ...">
+  <table id="historyTable" aria-label="Migration History Table">
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Job ID</th>
+        <th>Source</th>
+        <th>Destination</th>
+        <th>Table</th>
+        <th>Query</th>
+        <th class="nowrap">Rows</th>
+        <th class="nowrap">Duration (s)</th>
+        <th>Schedule ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rows rendered by JS -->
+    </tbody>
+  </table>
+  <div style="margin-top:15px;">
+    <button class="btn" onclick="window.location='/'">Back</button>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='migration_history.js') }}"></script>
+</body>
+</html>

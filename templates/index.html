@@ -1,29 +1,91 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <title>DB Migrator</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Data Migration Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+      .top-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .hist-btn {
+        background: white;
+        border: none;
+        box-shadow: none;
+        outline: none;
+        padding: 4px;
+        margin-left: 12px;
+        cursor: pointer;
+        vertical-align: middle;
+      }
+      .hist-btn:hover svg { filter: brightness(0.85); }
+      h2 {
+        margin: 0;
+        font-size: 1.6em;
+        text-align: left;
+        flex: 1 1 auto;
+      }
+    </style>
 </head>
-
 <body>
-  <div class="container">
-    <h2>Data Migration Tool</h2>
-    <form id="migrateForm">
-      <label>Source Connection:</label>
-      <select id="source"></select><br><br>
-      <label>Destination Connection:</label>
-      <select id="destination"></select><br><br>
-      <label>Source Query:</label><br>
-      <textarea id="query" rows="3" cols="60" required></textarea><br><br>
-      <label>Destination Table Name:</label><br>
-      <input id="target_table" type="text" required><br><br>
-      <button id="migrateBtn" type="submit" class="btn">Migrate</button>
-      <button id="manageConnectionsBtn" type="button" class="btn" onclick="window.location='/manage-connections'">Manage Connections</button>
-    </form>
-    <div id="result" style="display:none;"></div>
-  </div>
-  <script src="/static/index.js"></script>
-</body>
+    <div class="container">
 
+        <!-- Top bar with page title on left and history icon at top right -->
+        <div class="top-bar">
+          <h2>Data Migration Tool</h2>
+          <button id="viewHistoryBtn" class="btn hist-btn" title="View Migration History">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9.5" stroke="#357cf9" stroke-width="2"/>
+              <path d="M12 7v5l3 2" stroke="#357cf9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <form id="migrateForm">
+            <label>Source Connection:</label>
+            <select id="source"></select><br><br>
+
+            <label>Destination Connection:</label>
+            <select id="destination"></select><br><br>
+
+            <label>Source Query:</label><br>
+            <textarea id="query" rows="4" cols="60"></textarea><br><br>
+
+            <button type="button" id="previewBtn" class="btn">Preview & Map Columns</button>
+
+            <div id="previewArea" class="section" style="display:none;">
+                <h4>Preview Results</h4>
+                <div id="queryPreview"></div>
+            </div>
+
+            <div id="mappingArea" class="section" style="display:none;">
+                <h4>Column Type Mapping</h4>
+                <div id="typeMapForm"></div>
+            </div>
+
+            <br>
+            <label for="target_table">Destination Table Name:</label>
+            <input id="target_table" type="text" name="target_table"><br><br>
+
+            <label for="schedule_time">Schedule Migration Time:</label>
+            <input type="time" id="schedule_time" name="schedule_time" value="02:00"><br><br>
+
+            <button type="submit" id="migrateBtn" class="btn">Migrate</button>
+            <button type="button" id="scheduleBtn" class="btn">Schedule Migration</button>
+            <button type="button" id="manageSchedulesBtn" class="btn">Manage Schedules</button>
+            <button type="button" id="manageConnectionsBtn" class="btn">Manage Connections</button>
+        </form>
+
+        <div id="result" style="margin-top:20px;"></div>
+        <div id="progressArea" style="display:none; margin-top:10px;">
+            <div id="progressbar" style="background:#eee; width:100%; height:22px; border-radius:5px; overflow:hidden;">
+                <div id="progressfill" style="background:#4CAF50; width:0%; height:100%;"></div>
+            </div>
+            <div id="progressText" style="margin-top:5px;"></div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
+</body>
 </html>

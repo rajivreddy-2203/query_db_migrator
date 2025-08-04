@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Data Validation | DB Migrator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>Data Validation Tool</h2>
+    <form id="validateForm">
+      <label>Source Connection:</label>
+      <select id="valSource"></select><br><br>
+      <label>Destination Connection:</label>
+      <select id="valDestination"></select><br><br>
+      <label>Source (Query - e.g. SELECT * FROM mytable ORDER BY id):</label><br>
+      <textarea id="valSourceQuery" rows="2" cols="70"></textarea><br><br>
+      <label>Destination (Query - e.g. SELECT * FROM load_migrated ORDER BY id):</label><br>
+      <textarea id="valDestQuery" rows="2" cols="70"></textarea><br><br>
+      <button id="valBtn" class="btn" type="submit">Validate</button>
+      <button id="goHomeBtn" class="btn" type="button" onclick="window.location='/'">Back to Migration</button>
+    </form>
+    <div id="valResult" style="margin-top:20px; display:none;"></div>
+  </div>
+  <script src="{{ url_for('static', filename='validate.js') }}"></script>
+</body>
+</html>

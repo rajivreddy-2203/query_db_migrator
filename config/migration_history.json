@@ -1,0 +1,42 @@
+[
+  {
+    "job_id": "3e0c27a0-a5f7-482b-899f-c8029bb3ea0c",
+    "timestamp": "2025-08-04 23:31:07",
+    "source": "oracle_19_c",
+    "destination": "mysql_test",
+    "query": "select * from \"test_5\"",
+    "target_table": "load_test",
+    "rows_migrated": 320209,
+    "duration_sec": 6.558899164199829,
+    "schedule_id": null,
+    "type_mapping": {}
+  },
+  {
+    "job_id": "c993b9f9-bc77-4cfb-a1da-a35529977fb5",
+    "timestamp": "2025-08-04 23:33:06",
+    "source": "oracle_19_c",
+    "destination": "mysql_test",
+    "query": "select * from \"test_5\"",
+    "target_table": "scheduler_load_test",
+    "rows_migrated": 320209,
+    "duration_sec": 6.124477386474609,
+    "schedule_id": "7adea94f-ad75-4e82-b49b-55bdfaf2299d",
+    "type_mapping": {}
+  },
+  {
+    "job_id": "5c9ebec8-1b84-46ff-8c87-a4c99cbd9530",
+    "timestamp": "2025-08-04 23:36:07",
+    "source": "mysql_test",
+    "destination": "mysql_test",
+    "query": "select * from final_test",
+    "target_table": "reddy_L",
+    "rows_migrated": 320209,
+    "duration_sec": 7.735249042510986,
+    "schedule_id": "272dce2c-34a1-455e-b632-22e3a356501e",
+    "type_mapping": {
+      "id": "TEXT",
+      "lang_code": "TEXT",
+      "sentence": "TEXT"
+    }
+  }
+]

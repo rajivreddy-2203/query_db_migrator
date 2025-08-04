@@ -143,6 +143,18 @@ tr:hover {
   background: #d94e28;
 }
 
+.hist-btn {
+  background: white;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  margin-bottom: 14px;
+  margin-top: 5px;
+  padding: 4px;
+  cursor: pointer;
+}
+.hist-btn:hover svg { filter: brightness(0.85); }
+
 small, .help {
  display: block;
   margin-top: 4px;      /* Adds space below the input */

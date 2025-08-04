@@ -1,5 +1,6 @@
 import json
 import os
+import time
 
 CONNECTIONS_PATH = os.path.join(os.path.dirname(__file__), "config", "db_connections.json")
 
@@ -13,6 +14,8 @@ def save_connection(name, db_type, details):
     all_conns = get_all_connections()
     if db_type not in all_conns:
         all_conns[db_type] = {}
+    # Optionally set/update last_used
+    details["last_used"] = time.strftime("%Y-%m-%d %H:%M:%S")
     all_conns[db_type][name] = details
     with open(CONNECTIONS_PATH, "w") as f:
         json.dump(all_conns, f, indent=4)
@@ -34,5 +37,16 @@ def get_connection_by_name(name):
         if name in dbs:
             db_details = dbs[name].copy()
             db_details["type"] = db_type
+            # Optionally update last_used (for auditing)
+            db_details["last_used_access"] = time.strftime("%Y-%m-%d %H:%M:%S")
             return db_details
     raise Exception("No such connection: %s" % name)
+
+def get_connection_by_type_and_name(db_type, name):
+    all_conns = get_all_connections()
+    if db_type in all_conns and name in all_conns[db_type]:
+        db_details = all_conns[db_type][name].copy()
+        db_details["type"] = db_type
+        db_details["last_used_access"] = time.strftime("%Y-%m-%d %H:%M:%S")
+        return db_details
+    raise Exception("No such connection %s of type %s" % (name, db_type))
