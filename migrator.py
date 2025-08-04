@@ -54,7 +54,7 @@ def get_column_info(source_conn_name, query, preview_rows=10):
     raise Exception("No data or columns returned.")
 
 # ============== MAIN: BATCH MIGRATION W/ PROGRESS BAR SUPPORT =========
-def migrate_data_with_progress(
+def migrate_data(
     source_conn_name, dest_conn_name, query, target_table, job_id,
     type_mapping=None, jobs=None, schedule_id=None
 ):

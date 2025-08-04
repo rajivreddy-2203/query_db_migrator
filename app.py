@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from db_router import get_all_connections, save_connection, delete_connection
 from migrator import (
-    migrate_data_with_progress,
+    migrate_data,
     get_column_info,
     get_history,
 )
@@ -33,7 +33,7 @@ def run_scheduled_migration(job):
     }
     def run():
         try:
-            count = migrate_data_with_progress(
+            count = migrate_data(
                 job['source'], job['destination'], job['query'], job['target_table'], job_id,
                 type_mapping=job.get('type_mapping'), jobs=jobs, schedule_id=job.get('job_id')
             )
@@ -136,7 +136,7 @@ def api_migrate():
     }
     def run_migration():
         try:
-            count = migrate_data_with_progress(
+            count = migrate_data(
                 src_name, dst_name, query, target_table, job_id,
                 type_mapping=type_mapping, jobs=jobs
             )
