@@ -1,53 +1,78 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Migration History</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-  <style>
-    .container { max-width: 1100px; margin: 2em auto; font-family: Arial, sans-serif; }
-    h2 { text-align: center; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
-    th, td { border: 1px solid #ddd; padding: 7px; text-align: left; }
-    th { background: #f4f4f4; }
-    tr:nth-child(even) { background: #fafafa; }
-    tr:hover { background: #f1f1f1; }
-    .btn { padding: 6px 18px; margin: 0 5px; background: #357cf9; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    input[type="search"] { padding: 6px; width: 240px; margin: 12px 0 18px 0; border: 1px solid #ccc; border-radius: 4px; display: block; }
-    @media (max-width: 600px) {
-      .container { padding: 5px; font-size: 13px;}
-      table th, table td { font-size: 12px; padding: 4px; }
-      input[type="search"] { width: 100%; }
-    }
-    .nowrap { white-space: nowrap; }
-    .wrap { word-break: break-all; max-width:180px; }
-  </style>
 </head>
+
 <body>
-<div class="container">
-  <h2>Migration History</h2>
-  <input type="search" id="historySearch" placeholder="Search by Job ID, Table, Source, ...">
-  <table id="historyTable" aria-label="Migration History Table">
-    <thead>
-      <tr>
-        <th>Timestamp</th>
-        <th>Job ID</th>
-        <th>Source</th>
-        <th>Destination</th>
-        <th>Table</th>
-        <th>Query</th>
-        <th class="nowrap">Rows</th>
-        <th class="nowrap">Duration (s)</th>
-        <th>Schedule ID</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Rows rendered by JS -->
-    </tbody>
-  </table>
-  <div style="margin-top:15px;">
-    <button class="btn" onclick="window.location='/'">Back</button>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <span class="navbar-title">Data Migration Tool</span>
+    </div>
+    <div class="navbar-right">
+      <button type="button" id="manageConnectionsBtn" class="nav-btn">Manage Connections</button>
+      <button type="button" id="manageSchedulesBtn" class="nav-btn">Manage Schedules</button>
+      <button id="viewHistoryBtn" class="hist-btn" title="View Migration History">
+        <span class="hist-btn-content">
+          <svg class="hist-icon" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9.5" stroke="#357cf9" stroke-width="2" />
+            <path d="M12 7v5l3 2" stroke="#357cf9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span class="hist-text">History</span>
+        </span>
+      </button>
+
+    </div>
+  </nav>
+  <div class="card-panel">
+    <div class="panel-accent"></div>
+    <h2>Migration History</h2>
+    <div class="panel-search">
+      <input type="search" id="historySearch" placeholder="Search by Job ID, Table, Source, ...">
+      <button id="clearHistoryBtn" class="clear-btn" title="Clear Migration History">
+        <span class="hist-btn-content">
+          <!-- Trash SVG icon -->
+          <svg class="hist-icon" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M3 6h18" stroke="#ea4335" stroke-width="2" stroke-linecap="round" />
+            <rect x="5" y="6" width="14" height="13" rx="2.5" stroke="#ea4335" stroke-width="2" />
+            <path d="M9.5 10.5v4.5M14.5 10.5v4.5" stroke="#ea4335" stroke-width="2" stroke-linecap="round" />
+            <rect x="9" y="2" width="6" height="4" rx="2" stroke="#ea4335" stroke-width="2" />
+          </svg>
+          <span class="clear-text">Clear History</span>
+        </span>
+      </button>
+    </div>
+
+    <table id="historyTable" aria-label="Migration History Table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Job ID</th>
+          <th>Source</th>
+          <th>Destination</th>
+          <th>Table</th>
+          <th>Query</th>
+          <th class="nowrap">Rows</th>
+          <th class="nowrap">Duration (s)</th>
+          <th>Schedule ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- JS filled -->
+      </tbody>
+    </table>
+    <div style="margin-top:15px;">
+      <button class="btn" onclick="window.location='/'">Back</button>
+    </div>
   </div>
-</div>
-<script src="{{ url_for('static', filename='migration_history.js') }}"></script>
+  <script src="{{ url_for('static', filename='migration_history.js') }}"></script>
+  <script>
+    document.getElementById('manageConnectionsBtn').onclick = () => window.location = '/manage-connections';
+    document.getElementById('manageSchedulesBtn').onclick = () => window.location = '/schedules';
+    document.getElementById('viewHistoryBtn').onclick = () => window.location = '/migration-history';
+  </script>
 </body>
+
 </html>

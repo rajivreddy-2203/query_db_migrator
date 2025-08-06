@@ -1,91 +1,77 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Data Migration Tool</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-      .top-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 10px;
-      }
-      .hist-btn {
-        background: white;
-        border: none;
-        box-shadow: none;
-        outline: none;
-        padding: 4px;
-        margin-left: 12px;
-        cursor: pointer;
-        vertical-align: middle;
-      }
-      .hist-btn:hover svg { filter: brightness(0.85); }
-      h2 {
-        margin: 0;
-        font-size: 1.6em;
-        text-align: left;
-        flex: 1 1 auto;
-      }
-    </style>
+  <title>Data Migration Tool</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body>
-    <div class="container">
-
-        <!-- Top bar with page title on left and history icon at top right -->
-        <div class="top-bar">
-          <h2>Data Migration Tool</h2>
-          <button id="viewHistoryBtn" class="btn hist-btn" title="View Migration History">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="9.5" stroke="#357cf9" stroke-width="2"/>
-              <path d="M12 7v5l3 2" stroke="#357cf9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-        </div>
-
-        <form id="migrateForm">
-            <label>Source Connection:</label>
-            <select id="source"></select><br><br>
-
-            <label>Destination Connection:</label>
-            <select id="destination"></select><br><br>
-
-            <label>Source Query:</label><br>
-            <textarea id="query" rows="4" cols="60"></textarea><br><br>
-
-            <button type="button" id="previewBtn" class="btn">Preview & Map Columns</button>
-
-            <div id="previewArea" class="section" style="display:none;">
-                <h4>Preview Results</h4>
-                <div id="queryPreview"></div>
-            </div>
-
-            <div id="mappingArea" class="section" style="display:none;">
-                <h4>Column Type Mapping</h4>
-                <div id="typeMapForm"></div>
-            </div>
-
-            <br>
-            <label for="target_table">Destination Table Name:</label>
-            <input id="target_table" type="text" name="target_table"><br><br>
-
-            <label for="schedule_time">Schedule Migration Time:</label>
-            <input type="time" id="schedule_time" name="schedule_time" value="02:00"><br><br>
-
-            <button type="submit" id="migrateBtn" class="btn">Migrate</button>
-            <button type="button" id="scheduleBtn" class="btn">Schedule Migration</button>
-            <button type="button" id="manageSchedulesBtn" class="btn">Manage Schedules</button>
-            <button type="button" id="manageConnectionsBtn" class="btn">Manage Connections</button>
-        </form>
-
-        <div id="result" style="margin-top:20px;"></div>
-        <div id="progressArea" style="display:none; margin-top:10px;">
-            <div id="progressbar" style="background:#eee; width:100%; height:22px; border-radius:5px; overflow:hidden;">
-                <div id="progressfill" style="background:#4CAF50; width:0%; height:100%;"></div>
-            </div>
-            <div id="progressText" style="margin-top:5px;"></div>
-        </div>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <span class="navbar-title">Data Migration Tool</span>
     </div>
-    <script src="{{ url_for('static', filename='index.js') }}"></script>
+    <div class="navbar-right">
+      <button type="button" id="manageConnectionsBtn" class="nav-btn">Manage Connections</button>
+      <button type="button" id="manageSchedulesBtn" class="nav-btn">Manage Schedules</button>
+      <button id="viewHistoryBtn" class="hist-btn" title="View Migration History">
+        <span class="hist-btn-content">
+          <svg class="hist-icon" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9.5" stroke="#357cf9" stroke-width="2" />
+            <path d="M12 7v5l3 2" stroke="#357cf9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span class="hist-text">History</span>
+        </span>
+      </button>
+
+
+    </div>
+  </nav>
+  <div class="page-content">
+    <div class="form-col">
+      <form id="migrateForm">
+        <label>Source Connection</label>
+        <select id="source"></select>
+        <label>Destination Connection</label>
+        <select id="destination"></select>
+        <label>Source Query</label>
+        <textarea id="query" rows="4"></textarea>
+        <button type="button" id="previewBtn" class="btn fullwidth">Preview & Map Columns</button>
+        <label>Destination Table Name</label>
+        <input id="target_table" type="text" name="target_table" />
+        <label>Schedule Migration Time</label>
+        <input type="time" id="schedule_time" name="schedule_time" value="02:00" />
+        <div class="btn-bar">
+          <button type="submit" id="migrateBtn" class="btn btn-main">Migrate</button>
+          <button type="button" id="scheduleBtn" class="btn">Schedule Migration</button>
+        </div>
+      </form>
+      <div id="result" class="result-div"></div>
+      <div id="progressArea" class="progress-ctn" style="display:none;">
+        <div id="progressbar" class="progressbar">
+          <div id="progressfill" class="progressfill"></div>
+        </div>
+        <div id="progressText" class="progress-text"></div>
+      </div>
+    </div>
+    <!-- Side panel is hidden by default -->
+    <aside class="side-panel-upg" id="sidePanel" style="display:none;">
+      <section>
+        <div class="side-panel-title">Column Type Mapping</div>
+        <div class="side-panel-content" id="typeMapForm"></div>
+      </section>
+      <section>
+        <div class="side-panel-title">Preview Results</div>
+        <div class="side-panel-content" id="queryPreview"></div>
+      </section>
+    </aside>
+  </div>
+  <script src="{{ url_for('static', filename='index.js') }}"></script>
+  <script>
+    document.getElementById('manageConnectionsBtn').onclick = () => window.location = '/manage-connections';
+    document.getElementById('manageSchedulesBtn').onclick = () => window.location = '/schedules';
+    document.getElementById('viewHistoryBtn').onclick = () => window.location = '/migration-history';
+  </script>
 </body>
+
 </html>

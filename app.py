@@ -8,6 +8,7 @@ from migrator import (
 import threading
 import time
 import uuid
+import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.base import JobLookupError
 from datetime import datetime, timedelta
@@ -164,6 +165,19 @@ def api_history():
 @app.route('/migration-history')
 def migration_history_page():
     return render_template('migration_history.html')
+
+history_storage_path = os.path.join(os.path.dirname(__file__), "config", "migration_history.json")
+
+@app.route('/api/history', methods=['DELETE'])
+def clear_history():
+    try:
+        # If you store history in a JSON file:
+        with open(history_storage_path, "w") as f:
+            f.write("[]")  # Empty list
+        # If in database, truncate/clear the relevant table here
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route('/api/schedule', methods=['POST', 'GET', 'DELETE'])
 def api_schedule():

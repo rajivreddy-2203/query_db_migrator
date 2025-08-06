@@ -2,29 +2,34 @@
 <html>
 <head>
   <title>Scheduled Migrations</title>
-  <style>
-    .container { max-width: 900px; margin: 2em auto; font-family: Arial, sans-serif; }
-    h2 { text-align: center; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background: #f4f4f4; cursor: pointer; }
-    tr:nth-child(even) { background: #fafafa; }
-    tr:hover { background: #f1f1f1; }
-    .btn { padding: 6px 18px; margin: 0 5px; background: #357cf9; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    .btn:disabled { background: #aaa; cursor: default; }
-    .delete-btn { background: #e84343; }
-    input[type="search"] { padding: 6px; width: 220px; margin: 12px 0 18px 0; border: 1px solid #ccc; border-radius: 4px; display: block; }
-    @media (max-width: 600px) {
-      .container { padding: 5px; font-size: 14px;}
-      table th, table td { font-size: 13px; padding: 5px; }
-      input[type="search"] { width: 100%; }
-    }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-<div class="container">
+<nav class="navbar">
+  <div class="navbar-left">
+    <span class="navbar-title">Data Migration Tool</span>
+  </div>
+  <div class="navbar-right">
+    <button type="button" id="manageConnectionsBtn" class="nav-btn">Manage Connections</button>
+    <button type="button" id="manageSchedulesBtn" class="nav-btn">Manage Schedules</button>
+    <button id="viewHistoryBtn" class="hist-btn" title="View Migration History">
+  <span class="hist-btn-content">
+    <svg class="hist-icon" width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="9.5" stroke="#357cf9" stroke-width="2"/>
+      <path d="M12 7v5l3 2" stroke="#357cf9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="hist-text">History</span>
+  </span>
+</button>
+
+  </div>
+</nav>
+<div class="card-panel">
+  <div class="panel-accent"></div>
   <h2>Scheduled Migrations</h2>
-  <input type="search" id="searchBox" placeholder="Search by Job ID, Source, Destination...">
+  <div class="panel-search">
+    <input type="search" id="searchBox" placeholder="Search by Job ID, Source, Destination...">
+  </div>
   <table id="scheduleTable" aria-label="Scheduled Migrations Table">
     <thead>
       <tr>
@@ -37,14 +42,19 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Rows filled by JS -->
+      <!-- JS filled -->
     </tbody>
   </table>
-  <div style="margin-top:15px;">
+  <div style="margin-top:18px;">
     <button onclick="window.location='/'" class="btn">Back</button>
     <button id="refreshBtn" class="btn">Refresh</button>
   </div>
 </div>
 <script src="{{ url_for('static', filename='schedules.js') }}"></script>
+<script>
+document.getElementById('manageConnectionsBtn').onclick = () => window.location='/manage-connections';
+document.getElementById('manageSchedulesBtn').onclick = () => window.location='/schedules';
+document.getElementById('viewHistoryBtn').onclick = () => window.location='/migration-history';
+</script>
 </body>
 </html>

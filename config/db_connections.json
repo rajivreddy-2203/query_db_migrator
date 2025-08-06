@@ -1,36 +1,6 @@
 {
-    "oracle": {
-        "oracle_19_c": {
-            "user": "yrr2203",
-            "password": "yrr2203",
-            "dsn": "localhost:1522/orclpdb"
-        }
-    },
-    "postgresql": {
-        "postgres_17": {
-            "user": "postgres",
-            "password": "admin",
-            "host": "localhost",
-            "port": "5432",
-            "database": "postgres"
-        }
-    },
-    "mysql": {
-        "mysql_test": {
-            "user": "yrr2203",
-            "password": "yrr2203",
-            "host": "localhost",
-            "port": "3306",
-            "database": "test"
-        }
-    },
-    "sqlserver": {
-        "sql_test": {
-            "user": "yrr2203",
-            "password": "yrr2203",
-            "host": "127.0.0.1",
-            "port": "1433",
-            "database": "master"
-        }
-    }
+    "oracle": {},
+    "postgresql": {},
+    "mysql": {},
+    "sqlserver": {}
 }

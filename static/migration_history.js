@@ -50,3 +50,19 @@ window.onload = function() {
   search.addEventListener('input', filter);
   fetchHistory();
 };
+
+document.getElementById('clearHistoryBtn').onclick = function() {
+  if (!confirm("Are you sure you want to clear ALL migration history?")) return;
+  fetch('/api/history', { method: 'DELETE' })
+    .then(r => r.json())
+    .then(res => {
+      if (res.success) {
+        // Use your table reload logic here
+        if (typeof fetchHistoryTable === "function") fetchHistoryTable();
+        else location.reload();
+      } else {
+        alert(res.error || "Failed to clear history.");
+      }
+    })
+    .catch(() => alert("Failed to clear history."));
+};

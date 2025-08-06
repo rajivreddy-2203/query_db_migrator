@@ -3,32 +3,74 @@
 <head>
   <title>Manage Connections</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
 </head>
 <body>
-  <div class="container">
-    <h3>Connections</h3>
-    <table id="connections" border="1" cellpadding="5">
-      <thead><tr><th>Name</th><th>Type</th><th>Actions</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <hr>
-    <h4>Add Connection</h4>
-    <form id="connForm">
-      <label>Type:</label>
-        <select id="db_type" required onchange="showFields()">
-          <option value="">--Select--</option>
-          <option value="oracle">Oracle</option>
-          <option value="postgresql">Postgres</option>
+<nav class="navbar">
+  <div class="navbar-left">
+    <span class="navbar-title">Data Migration Tool</span>
+  </div>
+  <div class="navbar-right">
+    <button type="button" id="manageConnectionsBtn" class="nav-btn">Manage Connections</button>
+    <button type="button" id="manageSchedulesBtn" class="nav-btn">Manage Schedules</button>
+    <button id="viewHistoryBtn" class="hist-btn" title="View Migration History">
+  <span class="hist-btn-content">
+    <svg class="hist-icon" width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="9.5" stroke="#357cf9" stroke-width="2"/>
+      <path d="M12 7v5l3 2" stroke="#357cf9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="hist-text">History</span>
+  </span>
+</button>
+
+    </button>
+  </div>
+</nav>
+<div class="main-two-col">
+
+  <!-- Left: Add Connection -->
+  <div class="add-panel">
+    <h2 style="margin-top:0;">Add Connection</h2>
+    <form id="connForm" autocomplete="off">
+      <label>Type:
+        <select id="db_type" name="db_type" required>
+          <option value="" disabled selected hidden>-- Select Database Type --</option>
           <option value="mysql">MySQL</option>
+          <option value="oracle">Oracle</option>
+          <option value="postgresql">PostgreSQL</option>
           <option value="sqlserver">SQL Server</option>
-        </select><br>
-      <label>Connection Name:</label> <input id="name" required> <br>
-      <div id="fields"></div>
-      <button type="submit" class="btn">Save</button>
-      <button type="button" class="btn" onclick="resetForm()">Reset</button>
-      <button type="button" class="btn" onclick="window.location='/'">Back</button>
+        </select>
+      </label><br>
+      <label>Connection Name: <input id="name" name="name" required autocomplete="new-password"></label>
+      <div id="fields" style="margin:12px 0 13px 0;"></div>
+      <button type="submit" class="btn btn-main">Save</button>
+      <button type="button" id="resetConnBtn" class="btn">Reset</button>
+      <button type="button" onclick="window.location='/'" class="btn">Back</button>
     </form>
   </div>
-  <script src="/static/manage_connections.js"></script>
+
+  <!-- Right: Existing Connections Table -->
+  <div class="existing-panel">
+    <div class="existing-header">Connections</div>
+    <table style="width:100%;" id="connTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Details</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody><!-- JS fills in --></tbody>
+    </table>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='manage_connections.js') }}"></script>
+<script>
+let id = x=>document.getElementById(x);
+if (id('manageConnectionsBtn')) id('manageConnectionsBtn').onclick = () => window.location='/manage-connections';
+if (id('manageSchedulesBtn')) id('manageSchedulesBtn').onclick = () => window.location='/schedules';
+if (id('viewHistoryBtn')) id('viewHistoryBtn').onclick = () => window.location='/migration-history';
+</script>
 </body>
 </html>
