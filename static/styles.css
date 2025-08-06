@@ -29,6 +29,21 @@ html, body {
   padding-top: 8px;
 }
 .navbar-right { display: flex; align-items: center; gap: 12px; }
+.navbar-title {
+  font-size: 1.17em;
+  font-weight: bold;
+  color: #357cf9;
+  margin-right: 16px;
+  padding-top: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.14s;
+}
+.navbar-title:hover,
+.navbar-title:focus {
+  color: #2256c1;
+  text-decoration: underline;
+}
 
 
 /************ BUTTONS ************/

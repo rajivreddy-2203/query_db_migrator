@@ -1,60 +1,63 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Scheduled Migrations</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
-<nav class="navbar">
-  <div class="navbar-left">
-    <span class="navbar-title">Data Migration Tool</span>
-  </div>
-  <div class="navbar-right">
-    <button type="button" id="manageConnectionsBtn" class="nav-btn">Manage Connections</button>
-    <button type="button" id="manageSchedulesBtn" class="nav-btn">Manage Schedules</button>
-    <button id="viewHistoryBtn" class="hist-btn" title="View Migration History">
-  <span class="hist-btn-content">
-    <svg class="hist-icon" width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9.5" stroke="#357cf9" stroke-width="2"/>
-      <path d="M12 7v5l3 2" stroke="#357cf9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <span class="hist-text">History</span>
-  </span>
-</button>
 
+<body>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <a href="/" class="navbar-title" style="text-decoration:none;">Data Migration Tool</a>
+    </div>
+    <div class="navbar-right">
+      <button type="button" id="manageConnectionsBtn" class="nav-btn">Manage Connections</button>
+      <button type="button" id="manageSchedulesBtn" class="nav-btn">Manage Schedules</button>
+      <button id="viewHistoryBtn" class="hist-btn" title="View Migration History">
+        <span class="hist-btn-content">
+          <svg class="hist-icon" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9.5" stroke="#357cf9" stroke-width="2" />
+            <path d="M12 7v5l3 2" stroke="#357cf9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span class="hist-text">History</span>
+        </span>
+      </button>
+
+    </div>
+  </nav>
+  <div class="card-panel">
+    <div class="panel-accent"></div>
+    <h2>Scheduled Migrations</h2>
+    <div class="panel-search">
+      <input type="search" id="searchBox" placeholder="Search by Job ID, Source, Destination...">
+    </div>
+    <table id="scheduleTable" aria-label="Scheduled Migrations Table">
+      <thead>
+        <tr>
+          <th>Job ID</th>
+          <th>Source</th>
+          <th>Destination</th>
+          <th>Table</th>
+          <th>Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- JS filled -->
+      </tbody>
+    </table>
+    <div style="margin-top:18px;">
+      <button onclick="window.location='/'" class="btn">Back</button>
+      <button id="refreshBtn" class="btn">Refresh</button>
+    </div>
   </div>
-</nav>
-<div class="card-panel">
-  <div class="panel-accent"></div>
-  <h2>Scheduled Migrations</h2>
-  <div class="panel-search">
-    <input type="search" id="searchBox" placeholder="Search by Job ID, Source, Destination...">
-  </div>
-  <table id="scheduleTable" aria-label="Scheduled Migrations Table">
-    <thead>
-      <tr>
-        <th>Job ID</th>
-        <th>Source</th>
-        <th>Destination</th>
-        <th>Table</th>
-        <th>Time</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- JS filled -->
-    </tbody>
-  </table>
-  <div style="margin-top:18px;">
-    <button onclick="window.location='/'" class="btn">Back</button>
-    <button id="refreshBtn" class="btn">Refresh</button>
-  </div>
-</div>
-<script src="{{ url_for('static', filename='schedules.js') }}"></script>
-<script>
-document.getElementById('manageConnectionsBtn').onclick = () => window.location='/manage-connections';
-document.getElementById('manageSchedulesBtn').onclick = () => window.location='/schedules';
-document.getElementById('viewHistoryBtn').onclick = () => window.location='/migration-history';
-</script>
+  <script src="{{ url_for('static', filename='schedules.js') }}"></script>
+  <script>
+    document.getElementById('manageConnectionsBtn').onclick = () => window.location = '/manage-connections';
+    document.getElementById('manageSchedulesBtn').onclick = () => window.location = '/schedules';
+    document.getElementById('viewHistoryBtn').onclick = () => window.location = '/migration-history';
+  </script>
 </body>
+
 </html>
