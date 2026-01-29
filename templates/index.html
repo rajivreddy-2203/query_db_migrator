@@ -39,8 +39,18 @@
         <button type="button" id="previewBtn" class="btn fullwidth">Preview & Map Columns</button>
         <label>Destination Table Name</label>
         <input id="target_table" type="text" name="target_table" />
-        <label>Schedule Migration Time</label>
-        <input type="time" id="schedule_time" name="schedule_time" value="02:00" />
+        <label>Schedule Time</label>
+        <div class="time-picker-card">
+          <div class="time-picker-body" id="timePickerBody">
+            <input type="time" id="schedule_time" name="schedule_time" value="02:00" />
+            <div class="time-quick-actions">
+              <button type="button" class="time-quick-btn" id="timeNowBtn">Now</button>
+              <button type="button" class="time-quick-btn" id="timePlus15Btn">+15 min</button>
+              <button type="button" class="time-quick-btn" id="timePlus30Btn">+30 min</button>
+            </div>
+          </div>
+          <div class="time-picker-footer">Runs daily at the selected time (local server time).</div>
+        </div>
         <div class="btn-bar">
           <button type="submit" id="migrateBtn" class="btn btn-main">Migrate</button>
           <button type="button" id="scheduleBtn" class="btn">Schedule Migration</button>

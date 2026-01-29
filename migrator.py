@@ -8,6 +8,18 @@ from db_router import get_connection_by_name
 # Persistent job/migration history log file
 HISTORY_LOG = os.path.join(os.path.dirname(__file__), "config", "migration_history.json")
 
+# Import get_batch_size from app to avoid circular imports
+def get_batch_size():
+    """Get batch size from config file directly"""
+    import json
+    import os
+    config_path = os.path.join(os.path.dirname(__file__), "config", "db_connections.json")
+    if os.path.exists(config_path):
+        with open(config_path, "r") as f:
+            config = json.load(f)
+            return config.get("settings", {}).get("batch_size", 100000)
+    return 100000
+
 # ============== Helper: Migration History =============================
 def append_history(entry):
     try:
@@ -32,7 +44,8 @@ def get_history():
 def get_column_info(source_conn_name, query, preview_rows=10):
     src = get_connection_by_name(source_conn_name)
     reader_mod = importlib.import_module(f"{src['type']}_reader")
-    for cols, rows in reader_mod.fetch_data(query, src, batch_size=100000):
+    batch_size = get_batch_size()  # Use configured batch size
+    for cols, rows in reader_mod.fetch_data(query, src, batch_size=batch_size):
         if not rows:
             raise Exception("Query returned no rows.")
         
@@ -69,7 +82,7 @@ def migrate_data(
     total_rows = 0
     columns = None
     is_first = True
-    batch_size = 5000  # Fixed batch size for all migrations
+    batch_size = get_batch_size()  # Use configured batch size from settings
 
     for cols, rows in reader_mod.fetch_data(query, src, batch_size=batch_size):  # batch generator
         if columns is None:

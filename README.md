@@ -9,6 +9,10 @@
 - **Modular:** Only uses code needed for your migration.
 - **Flexible:** Add new database backends easily.
 - **No bloat:** Install only the packages for the databases you use.
+- **Secure:** Connection passwords are encrypted at rest using Fernet encryption.
+- **Configurable:** Set global batch size for optimal performance.
+- **Scheduled Migrations:** Schedule migrations to run at specific times.
+- **Migration History:** Track all migration jobs with detailed history.
 
 ---
 
@@ -39,30 +43,26 @@ cd data_migrator_query
 
 ### 2. Configure Database Connections
 
-Edit `config/db_connections.json` to specify your source and target database credentials:
+Use the web UI to add database connections (passwords are automatically encrypted), or manually edit `config/db_connections.json`:
 
 ```json
 {
-  "source": {
-    "db_type": "oracle",
-    "host": "localhost",
-    "port": 1521,
-    "user": "username",
-    "password": "password",
-    "database": "XE"
+  "postgresql": {
+    "mydb": {
+      "user": "username",
+      "password": "encrypted_password_here",
+      "host": "localhost",
+      "port": "5432",
+      "database": "mydb"
+    }
   },
-  "target": {
-    "db_type": "postgresql",
-    "host": "localhost",
-    "port": 5432,
-    "user": "username",
-    "password": "password",
-    "database": "postgres"
+  "settings": {
+    "batch_size": 100000
   }
 }
 ```
 
-> No need to edit this file as the app and UI updates this file automatically when you add, edit, or remove connections.
+> **Note:** Passwords are automatically encrypted when saved through the UI. For manual editing, run `python encrypt_existing_data.py` to encrypt plain text passwords.
 
 ### 3. Install Required Packages
 
@@ -139,6 +139,20 @@ ORACLE_PG_MIGRATOR/
 - All database connection details are stored in `config/db_connections.json`.
 - Modifications through the web app interface are saved directly to this file.
 - `db_router.py` and `migrator.py` read the current configuration and use it during migrations.
+- **Security:** All passwords and DSN strings are encrypted using Fernet encryption. See [ENCRYPTION_README.md](ENCRYPTION_README.md) for details.
+
+---
+
+## 🔒 Security
+
+Connection passwords are **automatically encrypted** using Fernet (AES-128) symmetric encryption:
+
+- Passwords are never stored in plain text
+- Encryption key is auto-generated on first run
+- Key is stored in `config/.encryption_key` (excluded from git)
+- **Important:** Backup both `db_connections.json` AND `.encryption_key` together
+
+For more details, see [ENCRYPTION_README.md](ENCRYPTION_README.md).
 
 ---
 
@@ -149,6 +163,12 @@ ORACLE_PG_MIGRATOR/
 
 **Q:** Can I extend/customize the migrations?  
 **A:** Yes! Add new reader/writer modules as needed.
+
+**Q:** Are my passwords secure?  
+**A:** Yes! All passwords are encrypted at rest. Never commit the `.encryption_key` file to version control.
+
+**Q:** How do I change the batch size?  
+**A:** Go to Manage Connections page, scroll to "Global Settings" and update the batch size (default: 100,000 rows).
 
 ---
 

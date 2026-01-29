@@ -1,3 +1,30 @@
+function escapeHTML(s) {
+  return ('' + s).replace(/[&<>"'`]/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;'
+  }[c]));
+}
+
+function formatScheduleTime(rawTime) {
+  if (!rawTime) {
+    return '<span class="time-pill time-pill-empty">Not set</span>';
+  }
+
+  let display = String(rawTime).trim();
+  // Normalize HH:MM:SS -> HH:MM
+  if (/^\d{2}:\d{2}:\d{2}$/.test(display)) {
+    display = display.slice(0, 5);
+  }
+
+  const safeDisplay = escapeHTML(display);
+  return `
+    <span class="time-pill" title="Runs daily at ${safeDisplay}">
+      <span class="time-icon">🕒</span>
+      <span class="time-text">${safeDisplay}</span>
+      <span class="time-subtext">Daily</span>
+    </span>
+  `;
+}
+
 window.onload = function() {
   const table = document.getElementById('scheduleTable').getElementsByTagName('tbody')[0];
   const searchBox = document.getElementById('searchBox');
@@ -14,13 +41,19 @@ window.onload = function() {
     }
     data.forEach(job => {
       const tr = document.createElement('tr');
+      const jobId = job.job_id || '';
+      const source = job.source || '';
+      const destination = job.destination || '';
+      const targetTable = job.target_table || '';
+      const scheduleRaw = job.schedule_time || job.schedule || '';
+
       tr.innerHTML = `
-        <td style="word-break:break-all;">${job.job_id}</td>
-        <td>${job.source || ''}</td>
-        <td>${job.destination || ''}</td>
-        <td>${job.target_table || ''}</td>
-        <td>${job.schedule_time || job.schedule || ''}</td>
-        <td><button data-id='${job.job_id}' class='btn delete-btn'>Delete</button></td>
+        <td style="word-break:break-all;">${escapeHTML(jobId)}</td>
+        <td>${escapeHTML(source)}</td>
+        <td>${escapeHTML(destination)}</td>
+        <td>${escapeHTML(targetTable)}</td>
+        <td class="time-cell">${formatScheduleTime(scheduleRaw)}</td>
+        <td><button data-id='${escapeHTML(jobId)}' class='btn delete-btn'>Delete</button></td>
       `;
       table.appendChild(tr);
     });

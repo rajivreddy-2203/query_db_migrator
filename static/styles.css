@@ -199,6 +199,65 @@ textarea {
   min-height: 90px;
   resize: vertical;
 }
+
+.time-picker-card {
+  background: #ffffff;
+  border: 1px solid #e2e9f7;
+  border-radius: 14px;
+  padding: 14px 16px 12px 16px;
+  margin: 2px 0 14px 0;
+  box-shadow: 0 6px 20px -18px #357cf95c;
+}
+.time-picker-body {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.time-picker-body input[type="time"] {
+  flex: 1 1 220px;
+  border: 1.5px solid #c6d8ff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 1.05em;
+  background: #f7faff;
+  transition: border 0.14s, box-shadow 0.14s, background 0.14s;
+}
+.time-picker-body input[type="time"]:focus {
+  border: 1.5px solid #357cf9;
+  box-shadow: 0 4px 14px -10px #357cf94d;
+  background: #ffffff;
+  outline: none;
+}
+.time-quick-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.time-quick-btn {
+  border: 1px solid #d6e4ff;
+  background: linear-gradient(180deg, #f7fbff 0%, #eaf2ff 100%);
+  color: #2256c1;
+  border-radius: 12px;
+  padding: 7px 14px;
+  font-size: 0.92em;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 16px -14px #357cf980;
+  transition: background 0.15s, border 0.15s, transform 0.12s, box-shadow 0.15s;
+}
+.time-quick-btn:hover,
+.time-quick-btn:focus {
+  background: linear-gradient(180deg, #eef5ff 0%, #deebff 100%);
+  border-color: #b6ccff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px -14px #357cf9a0;
+}
+.time-picker-footer {
+  margin-top: 10px;
+  color: #6f7b96;
+  font-size: 0.9em;
+}
 .btn-bar { display: flex; gap: 10px; margin-top: 6px;}
 .result-div { margin: 16px 4px; min-height: 30px }
 
@@ -395,6 +454,41 @@ input[type="search"]:focus { outline: 1.5px solid #357cf9; }
   margin-bottom: 10px;
   background: #fff;
   border-radius: 9px;
+}
+.time-cell {
+  min-width: 150px;
+}
+.time-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef5ff;
+  color: #1f4fbf;
+  font-weight: 600;
+  font-size: 0.93em;
+  box-shadow: inset 0 0 0 1px #d7e6ff;
+}
+.time-pill .time-icon {
+  font-size: 0.95em;
+}
+.time-pill .time-text {
+  letter-spacing: 0.2px;
+}
+.time-pill .time-subtext {
+  font-size: 0.8em;
+  font-weight: 600;
+  color: #5c7fd6;
+  background: #e1ecff;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+.time-pill.time-pill-empty {
+  background: #f5f6fa;
+  color: #7b869c;
+  box-shadow: inset 0 0 0 1px #e4e8f1;
+  font-weight: 500;
 }
 @media (max-width:900px) {
   .card-panel, .table-panel { margin-top: 1.3em; }

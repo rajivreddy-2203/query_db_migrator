@@ -15,6 +15,52 @@ window.onload = function() {
   const progressFill = document.getElementById('progressfill');
   const progressText = document.getElementById('progressText');
   const sidePanel = document.getElementById('sidePanel');
+  const timeNowBtn = document.getElementById('timeNowBtn');
+  const timePlus15Btn = document.getElementById('timePlus15Btn');
+  const timePlus30Btn = document.getElementById('timePlus30Btn');
+  const timePickerBody = document.getElementById('timePickerBody');
+
+  function formatTimeValue(dateObj) {
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  function setScheduleTime(dateObj) {
+    if (!scheduleTimeInput) return;
+    scheduleTimeInput.value = formatTimeValue(dateObj);
+    scheduleTimeInput.dispatchEvent(new Event('input'));
+  }
+
+  function adjustScheduleByMinutes(minutesToAdd) {
+    if (!scheduleTimeInput) return;
+    const now = new Date();
+    const [hours, minutes] = (scheduleTimeInput.value || formatTimeValue(now)).split(':');
+    const base = new Date();
+    base.setHours(Number(hours), Number(minutes), 0, 0);
+    base.setMinutes(base.getMinutes() + minutesToAdd);
+    setScheduleTime(base);
+  }
+
+  // --- Set schedule time to current time by default
+  setScheduleTime(new Date());
+
+  if (timeNowBtn) {
+    timeNowBtn.addEventListener('click', () => setScheduleTime(new Date()));
+  }
+  if (timePlus15Btn) {
+    timePlus15Btn.addEventListener('click', () => adjustScheduleByMinutes(15));
+  }
+  if (timePlus30Btn) {
+    timePlus30Btn.addEventListener('click', () => adjustScheduleByMinutes(30));
+  }
+  if (scheduleTimeInput) {
+    scheduleTimeInput.addEventListener('click', () => {
+      if (typeof scheduleTimeInput.showPicker === 'function') {
+        scheduleTimeInput.showPicker();
+      }
+    });
+  }
 
   // --- Fetch connections for dropdowns
   function fetchConnections() {

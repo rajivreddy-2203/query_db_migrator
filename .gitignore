@@ -8,6 +8,12 @@ __pycache__/
 *.db
 *.log
 
+# Config folder - contains sensitive data and user-specific settings
+config/
+config/db_connections.json
+config/schedules.json
+config/migration_history.json
+
 # Virtual environment (if present)
 venv/
 .venv/

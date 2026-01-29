@@ -49,6 +49,23 @@
         <button type="button" id="resetConnBtn" class="btn">Reset</button>
         <button type="button" onclick="window.location='/'" class="btn">Back</button>
       </form>
+
+      <!-- Batch Size Configuration Section -->
+      <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e0e0e0;">
+        <h2 style="margin-top:0;">Global Settings</h2>
+        <form id="settingsForm">
+          <label style="display: block; margin-bottom: 8px;">
+            <strong>Batch Size:</strong>
+            <input type="number" id="batch_size" name="batch_size" min="1000" max="10000000" 
+                   style="width: 150px; margin-left: 10px;" required>
+          </label>
+          <div style="color: #666; font-size: 12px; margin-bottom: 15px; margin-left: 0;">
+            Number of rows to process per batch (default: 100000)
+          </div>
+          <button type="submit" class="btn btn-main">Save Batch Size</button>
+        </form>
+        <div id="settingsMessage" style="margin-top: 10px; color: green; display: none;"></div>
+      </div>
     </div>
 
     <!-- Right: Existing Connections Table -->

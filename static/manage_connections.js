@@ -19,9 +19,11 @@ function fetchConnections() {
           let tr = document.createElement('tr');
           // Render details as a tidy table, not raw JSON
           let detailRows = "";
-          Object.entries(details).forEach(([k, v]) =>
-            detailRows += `<tr><td style="font-weight:600;padding-right:4px;color:#357cf9;">${escapeHTML(k)}:</td><td>${escapeHTML(v)}</td></tr>`
-          );
+          Object.entries(details).forEach(([k, v]) => {
+            // Mask password field in display
+            let displayValue = (k.toLowerCase() === 'password') ? '********' : escapeHTML(v);
+            detailRows += `<tr><td style="font-weight:600;padding-right:4px;color:#357cf9;">${escapeHTML(k)}:</td><td>${displayValue}</td></tr>`;
+          });
           tr.innerHTML = `
             <td>${escapeHTML(name)}</td>
             <td>${escapeHTML(type)}</td>
@@ -131,4 +133,52 @@ document.getElementById('connForm').onsubmit = function(e) {
 };
 
 // Load connections on page load
-window.onload = fetchConnections;
+window.onload = function() {
+  fetchConnections();
+  loadSettings();
+};
+
+// ========== Settings Management ==========
+
+function loadSettings() {
+  fetch('/api/settings')
+    .then(resp => resp.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById('batch_size').value = data.settings.batch_size || 100000;
+      }
+    })
+    .catch(err => console.error('Error loading settings:', err));
+}
+
+function showSettingsMessage(msg, isError = false) {
+  const msgDiv = document.getElementById('settingsMessage');
+  msgDiv.textContent = msg;
+  msgDiv.style.color = isError ? 'red' : 'green';
+  msgDiv.style.display = 'block';
+  setTimeout(() => {
+    msgDiv.style.display = 'none';
+  }, 3000);
+}
+
+document.getElementById('settingsForm').onsubmit = function(e) {
+  e.preventDefault();
+  const batchSize = document.getElementById('batch_size').value;
+  
+  fetch('/api/settings', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ batch_size: parseInt(batchSize) })
+  })
+    .then(resp => resp.json())
+    .then(data => {
+      if (data.success) {
+        showSettingsMessage('Batch size updated successfully!');
+      } else {
+        showSettingsMessage(data.error || 'Failed to update settings', true);
+      }
+    })
+    .catch(err => {
+      showSettingsMessage('Error: ' + err.message, true);
+    });
+};
