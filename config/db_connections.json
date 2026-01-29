@@ -1,6 +1,33 @@
 {
     "oracle": {},
-    "postgresql": {},
-    "mysql": {},
-    "sqlserver": {}
+    "postgresql": {
+        "postgres": {
+            "user": "pguser",
+            "password": "pgpass123",
+            "host": "localhost",
+            "port": "5432",
+            "database": "mydb",
+            "last_used": "2026-01-29 22:58:57"
+        }
+    },
+    "mysql": {
+        "mysql": {
+            "user": "dbuser",
+            "password": "dbpass123",
+            "host": "localhost",
+            "port": "3306",
+            "database": "test_1",
+            "last_used": "2026-01-29 23:00:11"
+        }
+    },
+    "sqlserver": {
+        "local": {
+            "user": "sa",
+            "password": "Password1234",
+            "host": "localhost",
+            "port": "1433",
+            "database": "windchill_admin",
+            "last_used": "2026-01-29 22:05:11"
+        }
+    }
 }

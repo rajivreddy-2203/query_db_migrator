@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "job_id": "9dede180-4550-48fe-9df5-ae9ddab60012",
+    "timestamp": "2026-01-29 22:59:20",
+    "source": "local",
+    "destination": "postgres",
+    "query": "select mas.documentNumber,epm.versionIdA2versionInfo+'.'+epm.iterationIdA2iterationInfo as version from windchill_admin.EPMDocument epm\njoin windchill_admin.EPMDocumentMaster mas on mas.idA2A2=epm.idA3masterReference",
+    "target_table": "temp_1",
+    "rows_migrated": 819,
+    "duration_sec": 0.1662917137145996,
+    "schedule_id": null,
+    "type_mapping": {
+      "documentNumber": "TEXT",
+      "version": "TEXT"
+    }
+  },
+  {
+    "job_id": "c6306c4d-636d-4025-b5e0-1ecffb57b7b5",
+    "timestamp": "2026-01-29 23:02:59",
+    "source": "local",
+    "destination": "mysql",
+    "query": "select mas.documentNumber,epm.versionIdA2versionInfo+'.'+epm.iterationIdA2iterationInfo as version from windchill_admin.EPMDocument epm\njoin windchill_admin.EPMDocumentMaster mas on mas.idA2A2=epm.idA3masterReference",
+    "target_table": "temp_1",
+    "rows_migrated": 819,
+    "duration_sec": 0.13532590866088867,
+    "schedule_id": null,
+    "type_mapping": {
+      "documentNumber": "TEXT",
+      "version": "TEXT"
+    }
+  }
+]

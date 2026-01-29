@@ -22,7 +22,9 @@ def fetch_data(query, connection_details, batch_size=1000):
             rows = cursor.fetchmany(batch_size)
             if not rows:
                 break
-            yield columns, rows
+            # Convert pyodbc Row objects to tuples for proper pandas DataFrame handling
+            rows_as_tuples = [tuple(row) for row in rows]
+            yield columns, rows_as_tuples
     except Exception as e:
         print(f"SQL Server fetch_data error: {e}")
         raise

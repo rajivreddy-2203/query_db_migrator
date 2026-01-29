@@ -35,6 +35,7 @@ def get_column_info(source_conn_name, query, preview_rows=10):
     for cols, rows in reader_mod.fetch_data(query, src, batch_size=100000):
         if not rows:
             raise Exception("Query returned no rows.")
+        
         df = pd.DataFrame(rows, columns=cols)
         def to_sql_type(dtype):
             dtype = str(dtype)
@@ -49,7 +50,8 @@ def get_column_info(source_conn_name, query, preview_rows=10):
             else:
                 return 'TEXT'
         coltypes = [to_sql_type(dt) for dt in df.dtypes]
-        preview = rows[:preview_rows]
+        # Convert preview rows to list of lists for proper JSON serialization
+        preview = [list(row) for row in rows[:preview_rows]]
         return cols, coltypes, preview
     raise Exception("No data or columns returned.")
 
