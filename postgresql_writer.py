@@ -2,15 +2,36 @@ import psycopg2
 from psycopg2.extras import execute_values
 
 def map_postgres_dtype(dtype):
+    """Map pandas dtype to PostgreSQL-specific data types"""
     dtype = dtype.lower()
-    if 'int' in dtype:
+    if 'int64' in dtype:
+        return 'BIGINT'
+    elif 'int32' in dtype:
         return 'INTEGER'
+    elif 'int16' in dtype:
+        return 'SMALLINT'
+    elif 'int8' in dtype:
+        return 'SMALLINT'
+    elif 'int' in dtype:
+        return 'INTEGER'
+    elif 'float64' in dtype:
+        return 'DOUBLE PRECISION'
+    elif 'float32' in dtype:
+        return 'REAL'
     elif 'float' in dtype:
-        return 'FLOAT'
+        return 'DOUBLE PRECISION'
     elif 'bool' in dtype:
         return 'BOOLEAN'
-    elif 'datetime' in dtype or 'date' in dtype:
+    elif 'datetime64' in dtype:
         return 'TIMESTAMP'
+    elif 'datetime' in dtype:
+        return 'TIMESTAMP'
+    elif 'date' in dtype:
+        return 'DATE'
+    elif 'time' in dtype:
+        return 'TIME'
+    elif 'object' in dtype:
+        return 'TEXT'  # TEXT has unlimited length in PostgreSQL
     else:
         return 'TEXT'
 

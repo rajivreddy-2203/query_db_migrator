@@ -1,17 +1,38 @@
 import mysql.connector
 
 def map_mysql_dtype(dtype):
+    """Map pandas dtype to MySQL-specific data types"""
     dtype = dtype.lower()
-    if 'int' in dtype:
+    if 'int64' in dtype:
+        return 'BIGINT'
+    elif 'int32' in dtype:
         return 'INT'
-    elif 'float' in dtype:
+    elif 'int16' in dtype:
+        return 'SMALLINT'
+    elif 'int8' in dtype:
+        return 'TINYINT'
+    elif 'int' in dtype:
+        return 'INT'
+    elif 'float64' in dtype:
+        return 'DOUBLE'
+    elif 'float32' in dtype:
         return 'FLOAT'
+    elif 'float' in dtype:
+        return 'DOUBLE'
     elif 'bool' in dtype:
-        return 'BOOLEAN'
-    elif 'datetime' in dtype or 'date' in dtype:
+        return 'TINYINT(1)'
+    elif 'datetime64' in dtype:
         return 'DATETIME'
+    elif 'datetime' in dtype:
+        return 'DATETIME'
+    elif 'date' in dtype:
+        return 'DATE'
+    elif 'time' in dtype:
+        return 'TIME'
+    elif 'object' in dtype:
+        return 'TEXT'  # Use TEXT for long strings
     else:
-        return 'VARCHAR(255)'
+        return 'TEXT'
 
 def insert_data(connection_details, df, table_name, type_mapping=None, create_table=False):
     """

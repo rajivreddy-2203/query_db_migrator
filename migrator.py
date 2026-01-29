@@ -42,31 +42,28 @@ def get_history():
 
 # ============== Column/Type Preview for Mapping UI ====================
 def get_column_info(source_conn_name, query, preview_rows=10):
+    """
+    Get column names, actual database types, and preview rows from source.
+    Uses the reader's get_column_metadata to get actual DB types.
+    """
     src = get_connection_by_name(source_conn_name)
     reader_mod = importlib.import_module(f"{src['type']}_reader")
-    batch_size = get_batch_size()  # Use configured batch size
-    for cols, rows in reader_mod.fetch_data(query, src, batch_size=batch_size):
-        if not rows:
-            raise Exception("Query returned no rows.")
-        
-        df = pd.DataFrame(rows, columns=cols)
-        def to_sql_type(dtype):
-            dtype = str(dtype)
-            if 'int' in dtype:
-                return 'INTEGER'
-            elif 'float' in dtype:
-                return 'FLOAT'
-            elif 'bool' in dtype:
-                return 'BOOLEAN'
-            elif 'datetime' in dtype or 'date' in dtype:
-                return 'DATE'
-            else:
-                return 'TEXT'
-        coltypes = [to_sql_type(dt) for dt in df.dtypes]
-        # Convert preview rows to list of lists for proper JSON serialization
-        preview = [list(row) for row in rows[:preview_rows]]
-        return cols, coltypes, preview
-    raise Exception("No data or columns returned.")
+    
+    # Get actual column types from database metadata
+    cols, coltypes = reader_mod.get_column_metadata(query, src)
+    
+    # Get preview data
+    batch_size = get_batch_size()
+    preview = []
+    for columns, rows in reader_mod.fetch_data(query, src, batch_size=batch_size):
+        if rows:
+            preview = [list(row) for row in rows[:preview_rows]]
+            break
+    
+    if not preview:
+        raise Exception("Query returned no rows.")
+    
+    return cols, coltypes, preview
 
 # ============== MAIN: BATCH MIGRATION W/ PROGRESS BAR SUPPORT =========
 def migrate_data(

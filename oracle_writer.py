@@ -1,17 +1,38 @@
 import oracledb
 
 def map_oracle_dtype(dtype):
+    """Map pandas dtype to Oracle-specific data types"""
     dtype = dtype.lower()
-    if 'int' in dtype:
-        return 'NUMBER'
+    if 'int64' in dtype:
+        return 'NUMBER(19)'  # 64-bit int
+    elif 'int32' in dtype:
+        return 'NUMBER(10)'  # 32-bit int
+    elif 'int16' in dtype:
+        return 'NUMBER(5)'   # 16-bit int
+    elif 'int8' in dtype:
+        return 'NUMBER(3)'   # 8-bit int
+    elif 'int' in dtype:
+        return 'NUMBER(19)'
+    elif 'float64' in dtype:
+        return 'BINARY_DOUBLE'  # 64-bit floating point
+    elif 'float32' in dtype:
+        return 'BINARY_FLOAT'   # 32-bit floating point
     elif 'float' in dtype:
-        return 'FLOAT'
+        return 'BINARY_DOUBLE'
     elif 'bool' in dtype:
         return 'NUMBER(1)'
-    elif 'datetime' in dtype or 'date' in dtype:
+    elif 'datetime64' in dtype:
+        return 'TIMESTAMP'  # More precise than DATE
+    elif 'datetime' in dtype:
+        return 'TIMESTAMP'
+    elif 'date' in dtype:
         return 'DATE'
+    elif 'time' in dtype:
+        return 'TIMESTAMP'
+    elif 'object' in dtype:
+        return 'CLOB'  # Use CLOB for large text objects
     else:
-        return 'VARCHAR2(4000)'
+        return 'CLOB'
 
 def insert_data(connection_details, df, table_name, type_mapping=None, create_table=False):
     """

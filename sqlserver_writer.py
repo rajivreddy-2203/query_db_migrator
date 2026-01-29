@@ -1,17 +1,38 @@
 import pyodbc
 
 def map_mssql_dtype(dtype):
+    """Map pandas dtype to SQL Server-specific data types"""
     dtype = dtype.lower()
-    if 'int' in dtype:
+    if 'int64' in dtype:
+        return 'BIGINT'
+    elif 'int32' in dtype:
         return 'INT'
+    elif 'int16' in dtype:
+        return 'SMALLINT'
+    elif 'int8' in dtype:
+        return 'TINYINT'
+    elif 'int' in dtype:
+        return 'INT'
+    elif 'float64' in dtype:
+        return 'FLOAT(53)'  # Double precision
+    elif 'float32' in dtype:
+        return 'REAL'  # Single precision
     elif 'float' in dtype:
-        return 'FLOAT'
+        return 'FLOAT(53)'
     elif 'bool' in dtype:
         return 'BIT'
-    elif 'datetime' in dtype or 'date' in dtype:
-        return 'DATETIME'
+    elif 'datetime64' in dtype:
+        return 'DATETIME2'  # More precise than DATETIME
+    elif 'datetime' in dtype:
+        return 'DATETIME2'
+    elif 'date' in dtype:
+        return 'DATE'
+    elif 'time' in dtype:
+        return 'TIME'
+    elif 'object' in dtype:
+        return 'NVARCHAR(MAX)'  # Use NVARCHAR(MAX) for long strings with Unicode support
     else:
-        return 'NVARCHAR(255)'
+        return 'NVARCHAR(MAX)'
 
 def insert_data(connection_details, df, table_name, type_mapping=None, create_table=False):
     """

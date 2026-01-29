@@ -20,10 +20,17 @@ function fetchConnections() {
           // Render details as a tidy table, not raw JSON
           let detailRows = "";
           Object.entries(details).forEach(([k, v]) => {
-            // Mask password field in display
+            // Skip default flags and mask password field in display
+            if (k.startsWith('default_')) return;
             let displayValue = (k.toLowerCase() === 'password') ? '********' : escapeHTML(v);
             detailRows += `<tr><td style="font-weight:600;padding-right:4px;color:#357cf9;">${escapeHTML(k)}:</td><td>${displayValue}</td></tr>`;
           });
+          let defaultStatus = '';
+          if (details.default_source) defaultStatus += '<span style="color:#2ecc71;font-weight:600;">★ Default Source</span>';
+          if (details.default_destination) defaultStatus += (defaultStatus ? ' | ' : '') + '<span style="color:#f39c12;font-weight:600;">★ Default Destination</span>';
+          if (defaultStatus) {
+            detailRows += `<tr><td style="font-weight:600;padding-right:4px;color:#357cf9;">Status:</td><td>${defaultStatus}</td></tr>`;
+          }
           tr.innerHTML = `
             <td>${escapeHTML(name)}</td>
             <td>${escapeHTML(type)}</td>
@@ -88,6 +95,15 @@ function editConn(db_type, name) {
         Object.entries(details).forEach(([k,v]) => {
           if (document.getElementById(k)) document.getElementById(k).value = v;
         });
+        // Set default preference dropdown
+        const defaultRole = document.getElementById('default_role');
+        if (details.default_source) {
+          defaultRole.value = 'source';
+        } else if (details.default_destination) {
+          defaultRole.value = 'destination';
+        } else {
+          defaultRole.value = '';
+        }
         document.getElementById('name').readOnly = true;
         document.getElementById('db_type').disabled = true;
       }, 10);
@@ -100,6 +116,7 @@ function resetForm() {
   document.getElementById('fields').innerHTML = '';
   document.getElementById('name').readOnly = false;
   document.getElementById('db_type').disabled = false;
+  document.getElementById('default_role').value = '';
 }
 
 // Add event for type selection (fix: ensures changing type shows fields)
@@ -125,12 +142,54 @@ document.getElementById('connForm').onsubmit = function(e) {
     details.port = document.getElementById('port').value;
     details.database = document.getElementById('database').value;
   }
+  const defaultRole = document.getElementById('default_role').value;
+  details.default_source = defaultRole === 'source';
+  details.default_destination = defaultRole === 'destination';
+  
+  // Check for existing defaults before saving
+  if (details.default_source || details.default_destination) {
+    fetch('/api/connections')
+      .then(resp => resp.json())
+      .then(cons => {
+        let existingDefaultSource = null;
+        let existingDefaultDest = null;
+        
+        // Find existing defaults (excluding current being edited)
+        Object.entries(cons).forEach(([type, dbs]) => {
+          Object.entries(dbs).forEach(([n, d]) => {
+            if (n !== name) {
+              if (d.default_source) existingDefaultSource = n;
+              if (d.default_destination) existingDefaultDest = n;
+            }
+          });
+        });
+        
+        let confirmMsg = '';
+        if (details.default_source && existingDefaultSource) {
+          confirmMsg = `A default source connection is already set to "${existingDefaultSource}". Do you want to replace it with "${name}"?`;
+        }
+        if (details.default_destination && existingDefaultDest) {
+          confirmMsg = `A default destination connection is already set to "${existingDefaultDest}". Do you want to replace it with "${name}"?`;
+        }
+        
+        if (confirmMsg && !confirm(confirmMsg)) {
+          return;
+        }
+        
+        saveConnection(name, db_type, details);
+      });
+  } else {
+    saveConnection(name, db_type, details);
+  }
+};
+
+function saveConnection(name, db_type, details) {
   fetch('/api/connections', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, db_type, details })
   }).then(() => { resetForm(); fetchConnections(); });
-};
+}
 
 // Load connections on page load
 window.onload = function() {

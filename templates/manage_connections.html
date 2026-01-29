@@ -45,6 +45,16 @@
         </label><br>
         <label>Connection Name: <input id="name" name="name" required autocomplete="new-password"></label>
         <div id="fields" style="margin:12px 0 13px 0;"></div>
+        <div style="margin: 15px 0; padding: 12px; background: #f0f4ff; border-left: 3px solid #357cf9; border-radius: 4px;">
+          <label style="display: block;">
+            Default Preference:
+            <select id="default_role" style="margin-top: 4px; padding: 6px; border: 1px solid #357cf9; border-radius: 4px;">
+              <option value="" selected>No preference</option>
+              <option value="source">Default source</option>
+              <option value="destination">Default destination</option>
+            </select>
+          </label>
+        </div>
         <button type="submit" class="btn btn-main">Save</button>
         <button type="button" id="resetConnBtn" class="btn">Reset</button>
         <button type="button" onclick="window.location='/'" class="btn">Back</button>
