@@ -52,8 +52,12 @@ def fetch_data(query, connection_details, batch_size=1000):
             f"DATABASE={connection_details['database']};"
             f"UID={connection_details['user']};"
             f"PWD={connection_details['password']};"
+            f"CharacterSet=UTF-8;"
         )
         conn = pyodbc.connect(conn_str)
+        conn.setdecoding(pyodbc.SQL_CHAR, encoding='utf-8')
+        conn.setdecoding(pyodbc.SQL_WCHAR, encoding='utf-8')
+        conn.setencoding(encoding='utf-8')
         cursor = conn.cursor()
         cursor.execute(query)
         columns = [desc[0] for desc in cursor.description]
@@ -84,8 +88,12 @@ def get_column_metadata(query, connection_details):
             f"DATABASE={connection_details['database']};"
             f"UID={connection_details['user']};"
             f"PWD={connection_details['password']};"
+            f"CharacterSet=UTF-8;"
         )
         conn = pyodbc.connect(conn_str)
+        conn.setdecoding(pyodbc.SQL_CHAR, encoding='utf-8')
+        conn.setdecoding(pyodbc.SQL_WCHAR, encoding='utf-8')
+        conn.setencoding(encoding='utf-8')
         cursor = conn.cursor()
         cursor.execute(query)
         columns = [desc[0] for desc in cursor.description]

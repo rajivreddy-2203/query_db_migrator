@@ -46,7 +46,8 @@ def insert_data(connection_details, df, table_name, type_mapping=None, create_ta
         user=connection_details["user"],
         password=connection_details["password"],
         host=connection_details["host"],
-        port=int(connection_details["port"])
+        port=int(connection_details["port"]),
+        client_encoding='UTF8'
     )
     cursor = conn.cursor()
     try:

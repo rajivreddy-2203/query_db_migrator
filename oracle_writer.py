@@ -43,7 +43,9 @@ def insert_data(connection_details, df, table_name, type_mapping=None, create_ta
     conn = oracledb.connect(
         user=connection_details["user"],
         password=connection_details["password"],
-        dsn=connection_details["dsn"]
+        dsn=connection_details["dsn"],
+        encoding="UTF-8",
+        nencoding="UTF-8"
     )
     cursor = conn.cursor()
     try:

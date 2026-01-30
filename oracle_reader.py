@@ -59,7 +59,9 @@ def fetch_data(query, connection_details, batch_size=1000):
         conn = oracledb.connect(
             user=connection_details["user"],
             password=connection_details["password"],
-            dsn=connection_details["dsn"]
+            dsn=connection_details["dsn"],
+            encoding="UTF-8",
+            nencoding="UTF-8"
         )
         cursor = conn.cursor()
         cursor.execute(query)
@@ -86,7 +88,9 @@ def get_column_metadata(query, connection_details):
         conn = oracledb.connect(
             user=connection_details["user"],
             password=connection_details["password"],
-            dsn=connection_details["dsn"]
+            dsn=connection_details["dsn"],
+            encoding="UTF-8",
+            nencoding="UTF-8"
         )
         cursor = conn.cursor()
         cursor.execute(query)

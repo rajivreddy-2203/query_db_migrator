@@ -52,7 +52,8 @@ def fetch_data(query, connection_details, batch_size=1000):
             user=connection_details["user"],
             password=connection_details["password"],
             host=connection_details["host"],
-            port=int(connection_details["port"])
+            port=int(connection_details["port"]),
+            client_encoding='UTF8'
         )
         cursor = conn.cursor()
         cursor.execute(query)
@@ -81,7 +82,8 @@ def get_column_metadata(query, connection_details):
             user=connection_details["user"],
             password=connection_details["password"],
             host=connection_details["host"],
-            port=int(connection_details["port"])
+            port=int(connection_details["port"]),
+            client_encoding='UTF8'
         )
         cursor = conn.cursor()
         cursor.execute(query)

@@ -45,7 +45,9 @@ def insert_data(connection_details, df, table_name, type_mapping=None, create_ta
         password=connection_details["password"],
         host=connection_details["host"],
         port=int(connection_details["port"]),
-        database=connection_details["database"]
+        database=connection_details["database"],
+        charset='utf8mb4',
+        use_unicode=True
     )
     cursor = conn.cursor()
     try:
@@ -57,7 +59,7 @@ def insert_data(connection_details, df, table_name, type_mapping=None, create_ta
                 f'`{col}` {map_mysql_dtype(str(dtype))}'
                 for col, dtype in zip(df.columns, df.dtypes)
             )
-            create_stmt = f'CREATE TABLE IF NOT EXISTS `{table_name}` ({columns_with_types});'
+            create_stmt = f'CREATE TABLE IF NOT EXISTS `{table_name}` ({columns_with_types}) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
             cursor.execute(create_stmt)
         # Insert data
         cols = ','.join(f'`{col}`' for col in df.columns)
