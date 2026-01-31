@@ -10,6 +10,13 @@ html, body {
   overflow-x: hidden;
 }
 
+.no-animations *,
+.no-animations *::before,
+.no-animations *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
 /************ NAVBAR ************/
 .navbar {
   display: flex;

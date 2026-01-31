@@ -1,5 +1,12 @@
 from flask import Flask, render_template, request, jsonify
-from db_router import get_all_connections, save_connection, delete_connection
+from db_router import (
+    get_all_connections,
+    save_connection,
+    delete_connection,
+    get_config,
+    save_config,
+    get_or_create_key,
+)
 from migrator import (
     migrate_data,
     get_column_info,
@@ -19,7 +26,6 @@ app = Flask(__name__)
 jobs = {}
 
 # === CONFIGURATION PATHS ===
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config", "db_connections.json")
 SCHEDULES_PATH = os.path.join(os.path.dirname(__file__), "config", "schedules.json")
 DEFAULT_SETTINGS = {"batch_size": 100000}
 
@@ -58,40 +64,13 @@ def remove_schedule(job_id):
     save_schedules(schedules)
     return True
 
-def get_config():
-    """Get the entire configuration including connections and settings"""
-    if not os.path.exists(CONFIG_PATH):
-        return {
-            "oracle": {},
-            "postgresql": {},
-            "mysql": {},
-            "sqlserver": {},
-            "settings": DEFAULT_SETTINGS.copy()
-        }
-    
-    with open(CONFIG_PATH, "r") as f:
-        config = json.load(f)
-    
-    # Ensure settings exist with defaults
-    if "settings" not in config:
-        config["settings"] = DEFAULT_SETTINGS.copy()
-    else:
-        # Merge with defaults to ensure all settings exist
-        for key, value in DEFAULT_SETTINGS.items():
-            if key not in config["settings"]:
-                config["settings"][key] = value
-    
-    return config
-
-def save_config(config):
-    """Save the entire configuration"""
-    with open(CONFIG_PATH, "w") as f:
-        json.dump(config, f, indent=4)
-
 def get_settings():
     """Get application settings"""
     config = get_config()
-    return config.get("settings", DEFAULT_SETTINGS.copy())
+    settings = config.get("settings", {})
+    merged = DEFAULT_SETTINGS.copy()
+    merged.update(settings)
+    return merged
 
 def update_settings(settings_updates):
     """Update specific settings"""
@@ -122,8 +101,6 @@ def set_batch_size(batch_size):
 # === INITIALIZE CONFIG FILES ON STARTUP ===
 def initialize_config():
     """Ensure config folder and all required files exist with default settings"""
-    from cryptography.fernet import Fernet
-    
     config_dir = os.path.join(os.path.dirname(__file__), "config")
     
     # Create config directory if it doesn't exist
@@ -173,15 +150,11 @@ def initialize_config():
                     print(f"⚠ Warning: Could not verify {filename}: {e}")
     
     # Initialize encryption key file
-    encryption_key_path = os.path.join(config_dir, ".encryption_key")
-    if not os.path.exists(encryption_key_path):
-        try:
-            key = Fernet.generate_key()
-            with open(encryption_key_path, "wb") as f:
-                f.write(key)
-            print(f"✓ Generated encryption key: .encryption_key")
-        except Exception as e:
-            print(f"⚠ Warning: Could not create encryption key: {e}")
+    try:
+        get_or_create_key()
+        print("✓ Ensured encryption key: .encryption_key")
+    except Exception as e:
+        print(f"⚠ Warning: Could not create encryption key: {e}")
 
 # Initialize config when module loads
 initialize_config()
