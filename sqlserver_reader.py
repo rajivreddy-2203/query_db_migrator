@@ -1,4 +1,4 @@
-import pyodbc
+import pymssql
 
 def get_column_types(cursor_description):
     """
@@ -39,6 +39,7 @@ def get_column_types(cursor_description):
     
     return types
 
+
 def fetch_data(query, connection_details, batch_size=1000):
     """
     Yields (columns, rows) for each batch from SQL Server.
@@ -46,18 +47,14 @@ def fetch_data(query, connection_details, batch_size=1000):
     """
     conn = None
     try:
-        conn_str = (
-            f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-            f"SERVER={connection_details['host']},{connection_details['port']};"
-            f"DATABASE={connection_details['database']};"
-            f"UID={connection_details['user']};"
-            f"PWD={connection_details['password']};"
-            f"CharacterSet=UTF-8;"
+        conn = pymssql.connect(
+            server=connection_details['host'],
+            port=connection_details['port'],
+            user=connection_details['user'],
+            password=connection_details['password'],
+            database=connection_details['database'],
+            charset='UTF-8'
         )
-        conn = pyodbc.connect(conn_str)
-        conn.setdecoding(pyodbc.SQL_CHAR, encoding='utf-8')
-        conn.setdecoding(pyodbc.SQL_WCHAR, encoding='utf-8')
-        conn.setencoding(encoding='utf-8')
         cursor = conn.cursor()
         cursor.execute(query)
         columns = [desc[0] for desc in cursor.description]
@@ -65,7 +62,6 @@ def fetch_data(query, connection_details, batch_size=1000):
             rows = cursor.fetchmany(batch_size)
             if not rows:
                 break
-            # Convert pyodbc Row objects to tuples for proper pandas DataFrame handling
             rows_as_tuples = [tuple(row) for row in rows]
             yield columns, rows_as_tuples
     except Exception as e:
@@ -75,6 +71,7 @@ def fetch_data(query, connection_details, batch_size=1000):
         if conn:
             conn.close()
 
+
 def get_column_metadata(query, connection_details):
     """
     Get column names and their actual database types.
@@ -82,18 +79,14 @@ def get_column_metadata(query, connection_details):
     """
     conn = None
     try:
-        conn_str = (
-            f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-            f"SERVER={connection_details['host']},{connection_details['port']};"
-            f"DATABASE={connection_details['database']};"
-            f"UID={connection_details['user']};"
-            f"PWD={connection_details['password']};"
-            f"CharacterSet=UTF-8;"
+        conn = pymssql.connect(
+            server=connection_details['host'],
+            port=connection_details['port'],
+            user=connection_details['user'],
+            password=connection_details['password'],
+            database=connection_details['database'],
+            charset='UTF-8'
         )
-        conn = pyodbc.connect(conn_str)
-        conn.setdecoding(pyodbc.SQL_CHAR, encoding='utf-8')
-        conn.setdecoding(pyodbc.SQL_WCHAR, encoding='utf-8')
-        conn.setencoding(encoding='utf-8')
         cursor = conn.cursor()
         cursor.execute(query)
         columns = [desc[0] for desc in cursor.description]

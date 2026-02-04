@@ -1,4 +1,4 @@
-import pyodbc
+import pymssql
 
 def map_mssql_dtype(dtype):
     """Map pandas dtype to SQL Server-specific data types"""
@@ -34,24 +34,21 @@ def map_mssql_dtype(dtype):
     else:
         return 'NVARCHAR(MAX)'
 
+
 def insert_data(connection_details, df, table_name, type_mapping=None, create_table=False):
     """
     Insert a batch DataFrame into SQL Server table, creating the table if requested.
     type_mapping: dict of {col: mssql_type}
     create_table: only True on first batch
     """
-    conn_str = (
-        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-        f"SERVER={connection_details['host']},{connection_details['port']};"
-        f"DATABASE={connection_details['database']};"
-        f"UID={connection_details['user']};"
-        f"PWD={connection_details['password']};"
-        f"CharacterSet=UTF-8;"
+    conn = pymssql.connect(
+        server=connection_details['host'],
+        port=connection_details['port'],
+        user=connection_details['user'],
+        password=connection_details['password'],
+        database=connection_details['database'],
+        charset='UTF-8'
     )
-    conn = pyodbc.connect(conn_str)
-    conn.setdecoding(pyodbc.SQL_CHAR, encoding='utf-8')
-    conn.setdecoding(pyodbc.SQL_WCHAR, encoding='utf-8')
-    conn.setencoding(encoding='utf-8')
     cursor = conn.cursor()
     try:
         if create_table:
@@ -68,9 +65,9 @@ def insert_data(connection_details, df, table_name, type_mapping=None, create_ta
             END
             """
             cursor.execute(check_and_create_sql)
-        # Insert data
+
         cols = ','.join(f'[{col}]' for col in df.columns)
-        values_template = ','.join(['?'] * len(df.columns))
+        values_template = ','.join(['%s'] * len(df.columns))
         sql = f"INSERT INTO [{table_name}] ({cols}) VALUES ({values_template})"
         cursor.executemany(sql, df.values.tolist())
         conn.commit()
